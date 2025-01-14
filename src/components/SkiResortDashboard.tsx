@@ -5,16 +5,17 @@ import { skiResortService } from '../services/SkiResortService';
 import DashboardSelector from './DashboardSelector';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
-import { Bar, BarChart, Line, LineChart, Pie, PieChart } from "recharts"
+import { Bar, BarChart, Line, LineChart, Pie, PieChart, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts"
 
 const SkiResortDashboard: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const [resort, setResort] = useState<SkiResort | null>(null);
+    const [resortsInCountry, setResortsInCountry] = useState<SkiResort[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        const fetchResort = async () => {
+        const fetchResortData = async () => {
             setIsLoading(true);
             setError(null);
             try {
@@ -22,16 +23,14 @@ const SkiResortDashboard: React.FC = () => {
                     const resortData = await skiResortService.getSkiResortById(Number(id));
                     if (resortData) {
                         setResort(resortData);
+                        const allResorts = await skiResortService.fetchSkiResorts();
+                        const countryResorts = allResorts.filter(r => r.Country === resortData.Country);
+                        setResortsInCountry(countryResorts);
                     } else {
                         setError('Resort not found');
                     }
                 } else {
-                    const resorts = await skiResortService.fetchSkiResorts();
-                    if (resorts.length > 0) {
-                        setResort(resorts[0]);
-                    } else {
-                        setError('No resorts available');
-                    }
+                    setError('No resort ID provided');
                 }
             } catch (err) {
                 setError('Failed to fetch resort data');
@@ -40,7 +39,7 @@ const SkiResortDashboard: React.FC = () => {
                 setIsLoading(false);
             }
         };
-        fetchResort();
+        fetchResortData();
     }, [id]);
 
     if (isLoading) {
@@ -67,10 +66,10 @@ const SkiResortDashboard: React.FC = () => {
         { name: 'Gondola Lifts', value: resort.GondolaLifts },
     ];
 
-    const elevationData = [
-        { name: 'Lowest Point', elevation: resort.LowestPoint },
-        { name: 'Highest Point', elevation: resort.HighestPoint },
-    ];
+    const elevationData = resortsInCountry.map(r => ({
+        name: r.Resort,
+        elevation: r.HighestPoint,
+    }));
 
     return (
         <div className="ski-resort-dashboard">
@@ -99,16 +98,21 @@ const SkiResortDashboard: React.FC = () => {
                             }}
                             className="h-[300px]"
                         >
-                            <PieChart data={slopeData}>
-                                <Pie
-                                    dataKey="value"
-                                    nameKey="name"
-                                    fill="var(--color-beginner)"
-                                    stroke="var(--color-beginner)"
-                                    strokeWidth={2}
-                                />
-                                <ChartTooltip content={<ChartTooltipContent />} />
-                            </PieChart>
+                            <ResponsiveContainer width="100%" height="100%">
+                                <PieChart>
+                                    <Pie
+                                        data={slopeData}
+                                        dataKey="value"
+                                        nameKey="name"
+                                        cx="50%"
+                                        cy="50%"
+                                        outerRadius={80}
+                                        fill="var(--color-beginner)"
+                                        label
+                                    />
+                                    <ChartTooltip content={<ChartTooltipContent />} />
+                                </PieChart>
+                            </ResponsiveContainer>
                         </ChartContainer>
                     </CardContent>
                 </Card>
@@ -134,16 +138,21 @@ const SkiResortDashboard: React.FC = () => {
                             }}
                             className="h-[300px]"
                         >
-                            <BarChart data={liftData}>
-                                <Bar dataKey="value" fill="var(--color-surface)" />
-                                <ChartTooltip content={<ChartTooltipContent />} />
-                            </BarChart>
+                            <ResponsiveContainer width="100%" height="100%">
+                                <BarChart data={liftData}>
+                                    <CartesianGrid strokeDasharray="3 3" />
+                                    <XAxis dataKey="name" />
+                                    <YAxis />
+                                    <ChartTooltip content={<ChartTooltipContent />} />
+                                    <Bar dataKey="value" fill="var(--color-surface)" />
+                                </BarChart>
+                            </ResponsiveContainer>
                         </ChartContainer>
                     </CardContent>
                 </Card>
                 <Card>
                     <CardHeader>
-                        <CardTitle>Elevation Profile</CardTitle>
+                        <CardTitle>Elevation Comparison ({resort.Country})</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <ChartContainer
@@ -155,10 +164,15 @@ const SkiResortDashboard: React.FC = () => {
                             }}
                             className="h-[300px]"
                         >
-                            <LineChart data={elevationData}>
-                                <Line type="monotone" dataKey="elevation" stroke="var(--color-elevation)" strokeWidth={2} />
-                                <ChartTooltip content={<ChartTooltipContent />} />
-                            </LineChart>
+                            <ResponsiveContainer width="100%" height="100%">
+                                <LineChart data={elevationData}>
+                                    <CartesianGrid strokeDasharray="3 3" />
+                                    <XAxis dataKey="name" angle={-45} textAnchor="end" height={70} />
+                                    <YAxis />
+                                    <ChartTooltip content={<ChartTooltipContent />} />
+                                    <Line type="monotone" dataKey="elevation" stroke="var(--color-elevation)" strokeWidth={2} />
+                                </LineChart>
+                            </ResponsiveContainer>
                         </ChartContainer>
                     </CardContent>
                 </Card>
@@ -196,6 +210,8 @@ const SkiResortDashboard: React.FC = () => {
 };
 
 export default SkiResortDashboard;
+
+
 
 
 
