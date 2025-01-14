@@ -8,11 +8,15 @@ const SkiResortList: React.FC = () => {
 
     useEffect(() => {
         const fetchResorts = async () => {
+            console.log('Fetching resorts...');
             const resorts = await skiResortService.fetchSkiResorts();
+            console.log('Fetched resorts:', resorts);
             setSkiResorts(resorts);
         };
         fetchResorts();
     }, []);
+
+    console.log('Rendering SkiResortList, skiResorts:', skiResorts);
 
     return (
         <div className="ski-resort-list">
@@ -29,6 +33,5 @@ const SkiResortList: React.FC = () => {
         </div>
     );
 };
-
 
 export default SkiResortList;

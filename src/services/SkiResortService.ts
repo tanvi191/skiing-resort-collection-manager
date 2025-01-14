@@ -5,9 +5,12 @@ class SkiResortService {
 
     async fetchSkiResorts(): Promise<SkiResort[]> {
         try {
+            console.log('Fetching CSV data...');
             const response = await fetch('https://hebbkx1anhila5yf.public.blob.vercel-storage.com/European_Ski_Resorts-MMmjLiKOcLX0IX3CziLyR7BMls2gJ9.csv');
             const csvData = await response.text();
+            console.log('CSV data fetched, first 100 characters:', csvData.substring(0, 100));
             this.skiResorts = this.parseCSV(csvData);
+            console.log('Parsed ski resorts:', this.skiResorts.length);
             return this.skiResorts;
         } catch (error) {
             console.error('Error fetching ski resorts:', error);
@@ -41,3 +44,5 @@ class SkiResortService {
 }
 
 export const skiResortService = new SkiResortService();
+
+

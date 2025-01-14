@@ -41,3 +41,5 @@ const SkiResortDetail: React.FC = () => {
 
 export default SkiResortDetail;
 
+
+
