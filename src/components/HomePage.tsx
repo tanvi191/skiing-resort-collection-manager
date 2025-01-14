@@ -1,16 +1,27 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 const HomePage: React.FC = () => {
     const videoRef = useRef<HTMLVideoElement>(null);
     const [isPlaying, setIsPlaying] = useState(false);
 
+    useEffect(() => {
+        if (videoRef.current) {
+            videoRef.current.play().catch(error => {
+                console.error("Error attempting to play", error);
+            });
+            setIsPlaying(true);
+        }
+    }, []);
+
     const togglePlay = () => {
         if (videoRef.current) {
             if (isPlaying) {
                 videoRef.current.pause();
             } else {
-                videoRef.current.play();
+                videoRef.current.play().catch(error => {
+                    console.error("Error attempting to play", error);
+                });
             }
             setIsPlaying(!isPlaying);
         }
@@ -19,7 +30,7 @@ const HomePage: React.FC = () => {
     return (
         <div className="home-page">
             <video ref={videoRef} loop muted playsInline className="background-video">
-                <source src="/3658800221-preview (1).mp4" type="video/mp4" />
+                <source src="/3658800221-preview.mp4" type="video/mp4" />
                 Your browser does not support the video tag.
             </video>
             <button onClick={togglePlay} className="play-pause-btn">
@@ -39,6 +50,8 @@ const HomePage: React.FC = () => {
 };
 
 export default HomePage;
+
+
 
 
 

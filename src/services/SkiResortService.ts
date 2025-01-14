@@ -15,15 +15,15 @@ class SkiResortService {
             console.log('CSV data fetched, first 500 characters:', csvData.substring(0, 500));
 
             return new Promise((resolve, reject) => {
-                Papa.parse(csvData, {
+                Papa.parse<SkiResort>(csvData, {
                     header: true,
                     dynamicTyping: true,
                     complete: (results) => {
-                        this.skiResorts = results.data.map((row: any, index: number) => this.createSkiResort(row, index));
+                        this.skiResorts = results.data.map((row, index) => this.createSkiResort(row, index));
                         console.log('Parsed ski resorts (first 3):', JSON.stringify(this.skiResorts.slice(0, 3), null, 2));
                         resolve(this.skiResorts);
                     },
-                    error: (error: Papa.ParseError) => {
+                    error: (error: Error) => {
                         console.error('Error parsing CSV:', error);
                         reject(error);
                     }
@@ -80,6 +80,14 @@ class SkiResortService {
 }
 
 export const skiResortService = new SkiResortService();
+
+
+
+
+
+
+
+
 
 
 

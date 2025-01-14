@@ -53,8 +53,13 @@ const AddResort: React.FC = () => {
                 <input name="DifficultSlope" type="number" value={resort.DifficultSlope} onChange={handleChange} placeholder="Difficult Slope" required />
                 <input name="TotalSlope" type="number" value={resort.TotalSlope} onChange={handleChange} placeholder="Total Slope" required />
                 <label>
-                    <input name="Snowparks" type="checkbox" checked={resort.Snowparks} onChange={handleChange} />
-                    Snowparks
+                    <input
+                        name="SnowParks"
+                        type="checkbox"
+                        checked={Boolean(resort.Snowparks)}
+                        onChange={handleChange}
+                    />
+                    SnowParks
                 </label>
                 <label>
                     <input name="NightSki" type="checkbox" checked={resort.NightSki} onChange={handleChange} />
@@ -73,6 +78,10 @@ const AddResort: React.FC = () => {
 };
 
 export default AddResort;
+
+
+
+
 
 
 
