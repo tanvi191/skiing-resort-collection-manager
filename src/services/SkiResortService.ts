@@ -45,9 +45,34 @@ class SkiResortService {
     getSkiResortById(id: number): SkiResort | undefined {
         return this.skiResorts.find(resort => resort.id === id);
     }
+
+    addSkiResort(resort: Partial<SkiResort>): void {
+        const newResort: SkiResort = {
+            ...resort,
+            id: this.skiResorts.length,
+            // Set default values for properties not provided
+            SnowParks: resort.SnowParks || false,
+            NightSki: resort.NightSki || false,
+            SurfaceLifts: resort.SurfaceLifts || 0,
+            ChairLifts: resort.ChairLifts || 0,
+            GondolaLifts: resort.GondolaLifts || 0,
+            TotalLifts: resort.TotalLifts || 0,
+            LiftCapacity: resort.LiftCapacity || 0,
+            SnowCannons: resort.SnowCannons || 0,
+        } as SkiResort;
+        this.skiResorts.push(newResort);
+        console.log('Added new ski resort:', newResort);
+    }
+
+    removeSkiResort(id: number): void {
+        this.skiResorts = this.skiResorts.filter(resort => resort.id !== id);
+        console.log(`Removed ski resort with id: ${id}`);
+    }
 }
 
 export const skiResortService = new SkiResortService();
+
+
 
 
 
