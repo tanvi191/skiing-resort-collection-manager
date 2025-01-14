@@ -19,7 +19,7 @@ const HomePage: React.FC = () => {
     return (
         <div className="home-page">
             <video ref={videoRef} loop muted playsInline className="background-video">
-                <source src="/3658800221-preview.mp4" type="video/mp4" />
+                <source src="/3658800221-preview (1).mp4" type="video/mp4" />
                 Your browser does not support the video tag.
             </video>
             <button onClick={togglePlay} className="play-pause-btn">

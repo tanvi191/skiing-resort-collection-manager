@@ -30,7 +30,14 @@ const SkiResortList: React.FC = () => {
     }
 
     if (error) {
-        return <div>Error: {error}</div>;
+        return (
+            <div>
+                <h2>Error</h2>
+                <p>{error}</p>
+                <h3>Debug Information</h3>
+                <pre>{JSON.stringify({ error }, null, 2)}</pre>
+            </div>
+        );
     }
 
     if (skiResorts.length === 0) {
@@ -57,13 +64,13 @@ const SkiResortList: React.FC = () => {
                     <tbody>
                     {skiResorts.map((resort) => (
                         <tr key={resort.id}>
-                            <td>{resort.Resort}</td>
-                            <td>{resort.Country}</td>
-                            <td>{resort.HighestPoint}</td>
-                            <td>{resort.LowestPoint}</td>
-                            <td>{resort.DayPassPriceAdult}</td>
-                            <td>{resort.TotalSlope}</td>
-                            <td>{resort.TotalLifts}</td>
+                            <td>{resort.Resort || 'N/A'}</td>
+                            <td>{resort.Country || 'N/A'}</td>
+                            <td>{resort.HighestPoint || 'N/A'}</td>
+                            <td>{resort.LowestPoint || 'N/A'}</td>
+                            <td>{resort.DayPassPriceAdult || 'N/A'}</td>
+                            <td>{resort.TotalSlope || 'N/A'}</td>
+                            <td>{resort.TotalLifts || 'N/A'}</td>
                             <td>
                                 <Link to={`/resort/${resort.id}`} className="view-details-btn">View Details</Link>
                                 <Link to={`/dashboard/${resort.id}`} className="view-dashboard-btn">View Dashboard</Link>
@@ -73,11 +80,30 @@ const SkiResortList: React.FC = () => {
                     </tbody>
                 </table>
             </div>
+            <div className="debug-section">
+                <h2>Debug Information</h2>
+                <h3>Number of Resorts</h3>
+                <p>{skiResorts.length}</p>
+                <h3>First Resort</h3>
+                <pre>{JSON.stringify(skiResorts[0], null, 2)}</pre>
+                <h3>Last Resort</h3>
+                <pre>{JSON.stringify(skiResorts[skiResorts.length - 1], null, 2)}</pre>
+            </div>
         </div>
     );
 };
 
 export default SkiResortList;
+
+
+
+
+
+
+
+
+
+
 
 
 

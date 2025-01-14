@@ -1,3 +1,4 @@
+import Papa from 'papaparse';
 import { SkiResort } from '../types/SkiResort';
 
 class SkiResortService {
@@ -7,96 +8,53 @@ class SkiResortService {
         try {
             console.log('Fetching CSV data...');
             const response = await fetch('https://hebbkx1anhila5yf.public.blob.vercel-storage.com/European_Ski_Resorts-MMmjLiKOcLX0IX3CziLyR7BMls2gJ9.csv');
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
             const csvData = await response.text();
-            console.log('CSV data fetched, first 100 characters:', csvData.substring(0, 100));
-            this.skiResorts = this.parseCSV(csvData);
-            console.log('Parsed ski resorts:', this.skiResorts);
-            return this.skiResorts;
+            console.log('CSV data fetched, first 500 characters:', csvData.substring(0, 500));
+
+            return new Promise((resolve, reject) => {
+                Papa.parse(csvData, {
+                    header: true,
+                    dynamicTyping: true,
+                    complete: (results) => {
+                        this.skiResorts = results.data.map((row: any, index: number) => this.createSkiResort(row, index));
+                        console.log('Parsed ski resorts (first 3):', JSON.stringify(this.skiResorts.slice(0, 3), null, 2));
+                        resolve(this.skiResorts);
+                    },
+                    error: (error) => {
+                        console.error('Error parsing CSV:', error);
+                        reject(error);
+                    }
+                });
+            });
         } catch (error) {
             console.error('Error fetching ski resorts:', error);
-            return [];
+            throw error;
         }
     }
 
-    private parseCSV(csvData: string): SkiResort[] {
-        const lines = csvData.split('\n');
-        const headers = lines[0].split(',').map(header => header.trim());
-        console.log('CSV Headers:', headers);
-
-        return lines.slice(1).map((line, index) => {
-            const values = line.split(',').map(value => value.trim());
-            console.log(`Parsing line ${index + 1}:`, values);
-            const resort = this.createSkiResort(headers, values, index);
-            console.log(`Parsed resort ${index + 1}:`, resort);
-            return resort;
-        });
-    }
-
-    private createSkiResort(headers: string[], values: string[], index: number): SkiResort {
-        const resort: Partial<SkiResort> = { id: index };
-
-        headers.forEach((header, i) => {
-            const value = this.parseValue(values[i]);
-            if (value !== undefined) {
-                switch (header) {
-                    case 'Resort':
-                    case 'Country':
-                        resort[header] = value as string;
-                        break;
-                    case 'HighestPoint':
-                    case 'LowestPoint':
-                    case 'DayPassPriceAdult':
-                    case 'BeginnerSlope':
-                    case 'IntermediateSlope':
-                    case 'DifficultSlope':
-                    case 'TotalSlope':
-                    case 'SurfaceLifts':
-                    case 'ChairLifts':
-                    case 'GondolaLifts':
-                    case 'TotalLifts':
-                    case 'LiftCapacity':
-                    case 'SnowCannons':
-                        resort[header] = typeof value === 'number' ? value : 0;
-                        break;
-                    case 'Snowparks':
-                    case 'NightSki':
-                        resort[header] = value === true;
-                        break;
-                }
-            }
-        });
-
-        return this.validateSkiResort(resort);
-    }
-
-    private parseValue(value: string): string | number | boolean | undefined {
-        if (value === '') return undefined;
-        if (value === 'Yes') return true;
-        if (value === 'No') return false;
-        const num = Number(value.replace(',', '.'));  // Replace comma with dot for proper number parsing
-        return isNaN(num) ? value : num;
-    }
-
-    private validateSkiResort(resort: Partial<SkiResort>): SkiResort {
+    private createSkiResort(row: any, index: number): SkiResort {
         return {
-            id: resort.id ?? 0,
-            Resort: resort.Resort ?? '',
-            Country: resort.Country ?? '',
-            HighestPoint: resort.HighestPoint ?? 0,
-            LowestPoint: resort.LowestPoint ?? 0,
-            DayPassPriceAdult: resort.DayPassPriceAdult ?? 0,
-            BeginnerSlope: resort.BeginnerSlope ?? 0,
-            IntermediateSlope: resort.IntermediateSlope ?? 0,
-            DifficultSlope: resort.DifficultSlope ?? 0,
-            TotalSlope: resort.TotalSlope ?? 0,
-            SnowParks: resort.SnowParks ?? false,
-            NightSki: resort.NightSki ?? false,
-            SurfaceLifts: resort.SurfaceLifts ?? 0,
-            ChairLifts: resort.ChairLifts ?? 0,
-            GondolaLifts: resort.GondolaLifts ?? 0,
-            TotalLifts: resort.TotalLifts ?? 0,
-            LiftCapacity: resort.LiftCapacity ?? 0,
-            SnowCannons: resort.SnowCannons ?? 0,
+            id: index,
+            Resort: row.Resort || '',
+            Country: row.Country || '',
+            HighestPoint: row.HighestPoint || 0,
+            LowestPoint: row.LowestPoint || 0,
+            DayPassPriceAdult: row.DayPassPriceAdult || 0,
+            BeginnerSlope: row.BeginnerSlope || 0,
+            IntermediateSlope: row.IntermediateSlope || 0,
+            DifficultSlope: row.DifficultSlope || 0,
+            TotalSlope: row.TotalSlope || 0,
+            SnowParks: row.SnowParks === 'Yes',
+            NightSki: row.NightSki === 'Yes',
+            SurfaceLifts: row.SurfaceLifts || 0,
+            ChairLifts: row.ChairLifts || 0,
+            GondolaLifts: row.GondolaLifts || 0,
+            TotalLifts: row.TotalLifts || 0,
+            LiftCapacity: row.LiftCapacity || 0,
+            SnowCannons: row.SnowCannons || 0,
         };
     }
 
@@ -105,7 +63,7 @@ class SkiResortService {
     }
 
     addSkiResort(resort: Partial<SkiResort>): void {
-        const newResort = this.validateSkiResort({ ...resort, id: this.skiResorts.length });
+        const newResort = this.createSkiResort(resort, this.skiResorts.length);
         this.skiResorts.push(newResort);
         console.log('Added new ski resort:', newResort);
     }
@@ -122,6 +80,16 @@ class SkiResortService {
 }
 
 export const skiResortService = new SkiResortService();
+
+
+
+
+
+
+
+
+
+
 
 
 

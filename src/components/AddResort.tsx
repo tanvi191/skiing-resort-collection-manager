@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { skiResortService } from '../services/SkiResortService';
+import { SkiResort } from '../types/SkiResort';
 
 const AddResort: React.FC = () => {
-    const [resort, setResort] = useState({
+    const [resort, setResort] = useState<Partial<SkiResort>>({
         Resort: '',
         Country: '',
         HighestPoint: 0,
@@ -12,13 +13,24 @@ const AddResort: React.FC = () => {
         BeginnerSlope: 0,
         IntermediateSlope: 0,
         DifficultSlope: 0,
-        TotalSlope: 0
+        TotalSlope: 0,
+        SnowParks: false,
+        NightSki: false,
+        SurfaceLifts: 0,
+        ChairLifts: 0,
+        GondolaLifts: 0,
+        TotalLifts: 0,
+        LiftCapacity: 0,
+        SnowCannons: 0
     });
     const navigate = useNavigate();
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        setResort(prev => ({ ...prev, [name]: name.includes('Slope') || name.includes('Point') || name === 'DayPassPriceAdult' ? Number(value) : value }));
+        const { name, value, type, checked } = e.target;
+        setResort(prev => ({
+            ...prev,
+            [name]: type === 'checkbox' ? checked : (type === 'number' ? Number(value) : value)
+        }));
     };
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -40,6 +52,20 @@ const AddResort: React.FC = () => {
                 <input name="IntermediateSlope" type="number" value={resort.IntermediateSlope} onChange={handleChange} placeholder="Intermediate Slope" required />
                 <input name="DifficultSlope" type="number" value={resort.DifficultSlope} onChange={handleChange} placeholder="Difficult Slope" required />
                 <input name="TotalSlope" type="number" value={resort.TotalSlope} onChange={handleChange} placeholder="Total Slope" required />
+                <label>
+                    <input name="Snowparks" type="checkbox" checked={resort.Snowparks} onChange={handleChange} />
+                    Snowparks
+                </label>
+                <label>
+                    <input name="NightSki" type="checkbox" checked={resort.NightSki} onChange={handleChange} />
+                    Night Ski
+                </label>
+                <input name="SurfaceLifts" type="number" value={resort.SurfaceLifts} onChange={handleChange} placeholder="Surface Lifts" required />
+                <input name="ChairLifts" type="number" value={resort.ChairLifts} onChange={handleChange} placeholder="Chair Lifts" required />
+                <input name="GondolaLifts" type="number" value={resort.GondolaLifts} onChange={handleChange} placeholder="Gondola Lifts" required />
+                <input name="TotalLifts" type="number" value={resort.TotalLifts} onChange={handleChange} placeholder="Total Lifts" required />
+                <input name="LiftCapacity" type="number" value={resort.LiftCapacity} onChange={handleChange} placeholder="Lift Capacity" required />
+                <input name="SnowCannons" type="number" value={resort.SnowCannons} onChange={handleChange} placeholder="Snow Cannons" required />
                 <button type="submit">Add Resort</button>
             </form>
         </div>
@@ -47,4 +73,8 @@ const AddResort: React.FC = () => {
 };
 
 export default AddResort;
+
+
+
+
 
