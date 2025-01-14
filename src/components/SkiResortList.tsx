@@ -24,9 +24,9 @@ const SkiResortList: React.FC = () => {
             <div className="resort-grid">
                 {skiResorts.map((resort) => (
                     <Link to={`/resort/${resort.id}`} key={resort.id} className="resort-card">
-                        <h2>{resort.Resort}</h2>
-                        <p>{resort.Country}</p>
-                        <p>Total Slope: {resort.TotalSlope} km</p>
+                        <h2>{resort.Resort || 'Unknown Resort'}</h2>
+                        <p>{resort.Country || 'Unknown Country'}</p>
+                        <p>Total Slope: {resort.TotalSlope || 'N/A'} km</p>
                     </Link>
                 ))}
             </div>
@@ -35,4 +35,6 @@ const SkiResortList: React.FC = () => {
 };
 
 export default SkiResortList;
+
+
 
