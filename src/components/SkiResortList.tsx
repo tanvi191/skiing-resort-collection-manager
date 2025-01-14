@@ -18,7 +18,7 @@ const SkiResortList: React.FC = () => {
                 setIsLoading(false);
             } catch (err) {
                 console.error('Error fetching resorts:', err);
-                setError('Failed to fetch ski resorts. Please try again later.');
+                setError(`Failed to fetch ski resorts. Error: ${err instanceof Error ? err.message : String(err)}`);
                 setIsLoading(false);
             }
         };
@@ -31,6 +31,10 @@ const SkiResortList: React.FC = () => {
 
     if (error) {
         return <div>Error: {error}</div>;
+    }
+
+    if (skiResorts.length === 0) {
+        return <div>No ski resorts found.</div>;
     }
 
     return (
@@ -74,6 +78,8 @@ const SkiResortList: React.FC = () => {
 };
 
 export default SkiResortList;
+
+
 
 
 
