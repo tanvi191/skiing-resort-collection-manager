@@ -16,6 +16,7 @@ const App: React.FC = () => {
                     <Route path="/" element={<HomePage />} />
                     <Route path="/resorts" element={<SkiResortList />} />
                     <Route path="/resort/:id" element={<SkiResortDetail />} />
+                    <Route path="/dashboard" element={<SkiResortDashboard />} />
                     <Route path="/dashboard/:id" element={<SkiResortDashboard />} />
                     <Route path="/add-resort" element={<AddResort />} />
                     <Route path="/remove-resort" element={<RemoveResort />} />
@@ -26,6 +27,8 @@ const App: React.FC = () => {
 };
 
 export default App;
+
+
 
 
 

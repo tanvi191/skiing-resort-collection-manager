@@ -2,16 +2,20 @@ import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { SkiResort } from '../types/SkiResort';
 import { skiResortService } from '../services/SkiResortService';
+import DashboardSelector from './DashboardSelector';
 
 const SkiResortDashboard: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const [resort, setResort] = useState<SkiResort | null>(null);
 
     useEffect(() => {
-        if (id) {
-            const resortData = skiResortService.getSkiResortById(Number(id));
-            setResort(resortData || null);
-        }
+        const fetchResort = async () => {
+            if (id) {
+                const resortData = await skiResortService.getSkiResortById(Number(id));
+                setResort(resortData || null);
+            }
+        };
+        fetchResort();
     }, [id]);
 
     if (!resort) {
@@ -23,6 +27,7 @@ const SkiResortDashboard: React.FC = () => {
 
     return (
         <div className="ski-resort-dashboard">
+            <DashboardSelector />
             <h1>{resort.Resort} Dashboard</h1>
             <div className="dashboard-grid">
                 <div className="dashboard-item">
@@ -67,6 +72,8 @@ const SkiResortDashboard: React.FC = () => {
 };
 
 export default SkiResortDashboard;
+
+
 
 
 
