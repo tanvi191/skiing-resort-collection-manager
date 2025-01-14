@@ -9,7 +9,7 @@ export interface SkiResort {
     IntermediateSlope: number;
     DifficultSlope: number;
     TotalSlope: number;
-    Snowparks: boolean;
+    SnowParks: boolean;
     NightSki: boolean;
     SurfaceLifts: number;
     ChairLifts: number;

@@ -23,7 +23,7 @@ class SkiResortService {
                         console.log('Parsed ski resorts (first 3):', JSON.stringify(this.skiResorts.slice(0, 3), null, 2));
                         resolve(this.skiResorts);
                     },
-                    error: (error) => {
+                    error: (error: Papa.ParseError) => {
                         console.error('Error parsing CSV:', error);
                         reject(error);
                     }
@@ -80,6 +80,8 @@ class SkiResortService {
 }
 
 export const skiResortService = new SkiResortService();
+
+
 
 
 
