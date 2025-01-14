@@ -5,14 +5,33 @@ import { skiResortService } from '../services/SkiResortService';
 
 const SkiResortList: React.FC = () => {
     const [skiResorts, setSkiResorts] = useState<SkiResort[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         const fetchResorts = async () => {
-            const resorts = await skiResortService.fetchSkiResorts();
-            setSkiResorts(resorts);
+            try {
+                setIsLoading(true);
+                const resorts = await skiResortService.fetchSkiResorts();
+                console.log('Fetched resorts:', resorts);
+                setSkiResorts(resorts);
+                setIsLoading(false);
+            } catch (err) {
+                console.error('Error fetching resorts:', err);
+                setError('Failed to fetch ski resorts. Please try again later.');
+                setIsLoading(false);
+            }
         };
         fetchResorts();
     }, []);
+
+    if (isLoading) {
+        return <div>Loading...</div>;
+    }
+
+    if (error) {
+        return <div>Error: {error}</div>;
+    }
 
     return (
         <div className="ski-resort-list">
@@ -55,6 +74,8 @@ const SkiResortList: React.FC = () => {
 };
 
 export default SkiResortList;
+
+
 
 
 
