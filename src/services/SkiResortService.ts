@@ -34,3 +34,8 @@ class SkiResortService {
         const num = Number(value);
         return isNaN(num) ? value : num;
     }
+
+    getSkiResortById(id: number): SkiResort | undefined {
+        return this.skiResorts.find(resort => resort.id === id);
+    }
+}
