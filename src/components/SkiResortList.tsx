@@ -101,7 +101,9 @@ const SkiResortList: React.FC = () => {
                         <th>Highest Point (m)</th>
                         <th>Lowest Point (m)</th>
                         <th>Day Pass Price (€)</th>
-                        <th>Total Slope (km)</th>
+                        <th>Beginner Slopes (km)</th>
+                        <th>Intermediate Slopes (km)</th>
+                        <th>Difficult Slopes (km)</th>
                         <th>Total Lifts</th>
                         <th>Actions</th>
                     </tr>
@@ -114,7 +116,9 @@ const SkiResortList: React.FC = () => {
                             <td>{resort.HighestPoint || 'N/A'}</td>
                             <td>{resort.LowestPoint || 'N/A'}</td>
                             <td>{resort.DayPassPriceAdult || 'N/A'}</td>
-                            <td>{resort.TotalSlope || 'N/A'}</td>
+                            <td>{resort.BeginnerSlope || 'N/A'}</td>
+                            <td>{resort.IntermediateSlope || 'N/A'}</td>
+                            <td>{resort.DifficultSlope || 'N/A'}</td>
                             <td>{resort.TotalLifts || 'N/A'}</td>
                             <td>
                                 <Link to={`/resort/${resort.id}`} className="view-details-btn">View Details</Link>
@@ -130,6 +134,8 @@ const SkiResortList: React.FC = () => {
 };
 
 export default SkiResortList;
+
+
 
 
 
