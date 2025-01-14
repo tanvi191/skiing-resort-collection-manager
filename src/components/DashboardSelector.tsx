@@ -19,6 +19,12 @@ const DashboardSelector: React.FC = () => {
         fetchResorts();
     }, []);
 
+    const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        const resortId = event.target.value;
+        setSelectedResort(resortId);
+        navigate(`/dashboard/${resortId}`);
+    };
+
     return (
         <div className="dashboard-selector">
             <select value={selectedResort} onChange={handleSelectChange}>
@@ -34,3 +40,5 @@ const DashboardSelector: React.FC = () => {
 };
 
 export default DashboardSelector;
+
+

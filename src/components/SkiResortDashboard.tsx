@@ -7,19 +7,49 @@ import DashboardSelector from './DashboardSelector';
 const SkiResortDashboard: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const [resort, setResort] = useState<SkiResort | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         const fetchResort = async () => {
-            if (id) {
-                const resortData = await skiResortService.getSkiResortById(Number(id));
-                setResort(resortData || null);
+            setIsLoading(true);
+            setError(null);
+            try {
+                if (id) {
+                    const resortData = await skiResortService.getSkiResortById(Number(id));
+                    if (resortData) {
+                        setResort(resortData);
+                    } else {
+                        setError('Resort not found');
+                    }
+                } else {
+                    const resorts = await skiResortService.fetchSkiResorts();
+                    if (resorts.length > 0) {
+                        setResort(resorts[0]);
+                    } else {
+                        setError('No resorts available');
+                    }
+                }
+            } catch (err) {
+                setError('Failed to fetch resort data');
+                console.error('Error fetching resort:', err);
+            } finally {
+                setIsLoading(false);
             }
         };
         fetchResort();
     }, [id]);
 
+    if (isLoading) {
+        return <div className="loading">Loading dashboard data...</div>;
+    }
+
+    if (error) {
+        return <div className="error">Error: {error}</div>;
+    }
+
     if (!resort) {
-        return <div>Loading...</div>;
+        return <div className="error">No resort data available</div>;
     }
 
     const maxAltitude = 4000; // Assuming 4000m as the max altitude for visualization
@@ -72,6 +102,8 @@ const SkiResortDashboard: React.FC = () => {
 };
 
 export default SkiResortDashboard;
+
+
 
 
 
