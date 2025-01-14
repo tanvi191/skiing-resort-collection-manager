@@ -10,7 +10,7 @@ class SkiResortService {
             const csvData = await response.text();
             console.log('CSV data fetched, first 100 characters:', csvData.substring(0, 100));
             this.skiResorts = this.parseCSV(csvData);
-            console.log('Parsed ski resorts:', this.skiResorts.length);
+            console.log('Parsed ski resorts:', this.skiResorts);
             return this.skiResorts;
         } catch (error) {
             console.error('Error fetching ski resorts:', error);
@@ -20,18 +20,23 @@ class SkiResortService {
 
     private parseCSV(csvData: string): SkiResort[] {
         const lines = csvData.split('\n');
-        const headers = lines[0].split(',');
+        const headers = lines[0].split(',').map(header => header.trim());
         return lines.slice(1).map((line, index) => {
-            const values = line.split(',');
-            const resort: any = { id: index };
+            const values = line.split(',').map(value => value.trim());
+            const resort: Partial<SkiResort> = { id: index };
             headers.forEach((header, i) => {
-                resort[header] = this.parseValue(values[i]);
+                const value = this.parseValue(values[i]);
+                if (value !== undefined) {
+                    (resort as any)[header] = value;
+                }
             });
+            console.log('Parsed resort:', resort);
             return resort as SkiResort;
         });
     }
 
-    private parseValue(value: string): any {
+    private parseValue(value: string): string | number | boolean | undefined {
+        if (value === '') return undefined;
         if (value === 'Yes') return true;
         if (value === 'No') return false;
         const num = Number(value);
@@ -44,5 +49,7 @@ class SkiResortService {
 }
 
 export const skiResortService = new SkiResortService();
+
+
 
 
