@@ -1,25 +1,32 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 const HomePage: React.FC = () => {
     const videoRef = useRef<HTMLVideoElement>(null);
+    const [isPlaying, setIsPlaying] = useState(false);
 
-    useEffect(() => {
+    const togglePlay = () => {
         if (videoRef.current) {
-            videoRef.current.play().catch(error => {
-                console.error("Error attempting to play video:", error);
-            });
+            if (isPlaying) {
+                videoRef.current.pause();
+            } else {
+                videoRef.current.play();
+            }
+            setIsPlaying(!isPlaying);
         }
-    }, []);
+    };
 
     return (
         <div className="home-page">
             <h1>Ski Resort Manager</h1>
             <div className="world-map-container">
                 <video ref={videoRef} loop muted playsInline className="world-map-video">
-                    <source src="/3658800221-preview.mp4" type="video/mp4" />
+                    <source src="/3593892521-preview.mp4" type="video/mp4" />
                     Your browser does not support the video tag.
                 </video>
+                <button onClick={togglePlay} className="play-pause-btn">
+                    {isPlaying ? 'Pause' : 'Play'} Animation
+                </button>
                 <div className="map-icon" style={{ top: '40%', left: '48%' }}>
                     <Link to="/resorts?country=Austria">🏔️</Link>
                 </div>
@@ -38,6 +45,8 @@ const HomePage: React.FC = () => {
 };
 
 export default HomePage;
+
+
 
 
 
