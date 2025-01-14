@@ -4,6 +4,8 @@ import SkiResortList from './components/SkiResortList';
 import SkiResortDetail from './components/SkiResortDetail';
 import SkiResortDashboard from './components/SkiResortDashboard';
 import HomePage from './components/HomePage';
+import AddResort from './components/AddResort';
+import RemoveResort from './components/RemoveResort';
 import './App.css';
 
 const App: React.FC = () => {
@@ -15,6 +17,8 @@ const App: React.FC = () => {
                     <Route path="/" element={<SkiResortList />} />
                     <Route path="/resort/:id" element={<SkiResortDetail />} />
                     <Route path="/dashboard/:id" element={<SkiResortDashboard />} />
+                    <Route path="/add-resort" element={<AddResort />} />
+                    <Route path="/remove-resort" element={<RemoveResort />} />
                 </Routes>
             </div>
         </Router>
