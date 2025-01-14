@@ -26,12 +26,12 @@ const SkiResortList: React.FC = () => {
     }, []);
 
     if (isLoading) {
-        return <div>Loading...</div>;
+        return <div className="loading">Loading...</div>;
     }
 
     if (error) {
         return (
-            <div>
+            <div className="error">
                 <h2>Error</h2>
                 <p>{error}</p>
                 <h3>Debug Information</h3>
@@ -41,7 +41,7 @@ const SkiResortList: React.FC = () => {
     }
 
     if (skiResorts.length === 0) {
-        return <div>No ski resorts found.</div>;
+        return <div className="no-resorts">No ski resorts found.</div>;
     }
 
     return (
@@ -80,20 +80,13 @@ const SkiResortList: React.FC = () => {
                     </tbody>
                 </table>
             </div>
-            <div className="debug-section">
-                <h2>Debug Information</h2>
-                <h3>Number of Resorts</h3>
-                <p>{skiResorts.length}</p>
-                <h3>First Resort</h3>
-                <pre>{JSON.stringify(skiResorts[0], null, 2)}</pre>
-                <h3>Last Resort</h3>
-                <pre>{JSON.stringify(skiResorts[skiResorts.length - 1], null, 2)}</pre>
-            </div>
         </div>
     );
 };
 
 export default SkiResortList;
+
+
 
 
 
