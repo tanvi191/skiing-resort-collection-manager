@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { SkiResort } from '../types/SkiResort';
 import { skiResortService } from '../services/SkiResortService';
 
@@ -46,12 +46,29 @@ const SkiResortDashboard: React.FC = () => {
                         <span>{resort.HighestPoint}m</span>
                     </div>
                 </div>
+                <div className="dashboard-item">
+                    <h2>Slope Difficulty</h2>
+                    <div className="slope-chart">
+                        <div className="slope beginner" style={{ width: `${(resort.BeginnerSlope / resort.TotalSlope) * 100}%` }}>
+                            <span>Beginner: {resort.BeginnerSlope}km</span>
+                        </div>
+                        <div className="slope intermediate" style={{ width: `${(resort.IntermediateSlope / resort.TotalSlope) * 100}%` }}>
+                            <span>Intermediate: {resort.IntermediateSlope}km</span>
+                        </div>
+                        <div className="slope difficult" style={{ width: `${(resort.DifficultSlope / resort.TotalSlope) * 100}%` }}>
+                            <span>Difficult: {resort.DifficultSlope}km</span>
+                        </div>
+                    </div>
+                </div>
             </div>
+            <Link to={`/resort/${resort.id}`}>Back to Resort Details</Link>
         </div>
     );
 };
 
 export default SkiResortDashboard;
+
+
 
 
 
