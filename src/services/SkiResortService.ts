@@ -5,33 +5,37 @@ class SkiResortService {
     private skiResorts: SkiResort[] = [];
 
     async fetchSkiResorts(): Promise<SkiResort[]> {
-        try {
-            console.log('Fetching CSV data...');
-            const response = await fetch('https://hebbkx1anhila5yf.public.blob.vercel-storage.com/European_Ski_Resorts-MMmjLiKOcLX0IX3CziLyR7BMls2gJ9.csv');
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            const csvData = await response.text();
-            console.log('CSV data fetched, first 500 characters:', csvData.substring(0, 500));
+        if (this.skiResorts.length === 0) {
+            try {
+                console.log('Fetching CSV data...');
+                const response = await fetch('https://hebbkx1anhila5yf.public.blob.vercel-storage.com/European_Ski_Resorts-MMmjLiKOcLX0IX3CziLyR7BMls2gJ9.csv');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const csvData = await response.text();
+                console.log('CSV data fetched, first 500 characters:', csvData.substring(0, 500));
 
-            return new Promise((resolve, reject) => {
-                Papa.parse<SkiResort>(csvData, {
-                    header: true,
-                    dynamicTyping: true,
-                    complete: (results) => {
-                        this.skiResorts = results.data.map((row, index) => this.createSkiResort(row, index));
-                        console.log('Parsed ski resorts (first 3):', JSON.stringify(this.skiResorts.slice(0, 3), null, 2));
-                        resolve(this.skiResorts);
-                    },
-                    error: (error: Error) => {
-                        console.error('Error parsing CSV:', error);
-                        reject(error);
-                    }
+                return new Promise((resolve, reject) => {
+                    Papa.parse<SkiResort>(csvData, {
+                        header: true,
+                        dynamicTyping: true,
+                        complete: (results) => {
+                            this.skiResorts = results.data.map((row, index) => this.createSkiResort(row, index));
+                            console.log('Parsed ski resorts (first 3):', JSON.stringify(this.skiResorts.slice(0, 3), null, 2));
+                            resolve(this.skiResorts);
+                        },
+                        error: (error: Error) => {
+                            console.error('Error parsing CSV:', error);
+                            reject(error);
+                        }
+                    });
                 });
-            });
-        } catch (error) {
-            console.error('Error fetching ski resorts:', error);
-            throw error;
+            } catch (error) {
+                console.error('Error fetching ski resorts:', error);
+                throw error;
+            }
+        } else {
+            return this.skiResorts;
         }
     }
 
@@ -58,7 +62,10 @@ class SkiResortService {
         };
     }
 
-    getSkiResortById(id: number): SkiResort | undefined {
+    async getSkiResortById(id: number): Promise<SkiResort | undefined> {
+        if (this.skiResorts.length === 0) {
+            await this.fetchSkiResorts();
+        }
         return this.skiResorts.find(resort => resort.id === id);
     }
 
@@ -80,6 +87,8 @@ class SkiResortService {
 }
 
 export const skiResortService = new SkiResortService();
+
+
 
 
 
