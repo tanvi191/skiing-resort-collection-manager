@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { SkiResort } from '../types/SkiResort';
 import { skiResortService } from '../services/SkiResortService';
 
@@ -34,8 +34,10 @@ const SkiResortDetail: React.FC = () => {
             <p>Total Lifts: {resort.TotalLifts}</p>
             <p>Lift Capacity: {resort.LiftCapacity} persons/hour</p>
             <p>Snow Cannons: {resort.SnowCannons}</p>
+            <Link to={`/dashboard/${resort.id}`}>View Dashboard</Link>
         </div>
     );
 };
 
 export default SkiResortDetail;
+
