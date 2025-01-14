@@ -17,7 +17,7 @@ const HomePage: React.FC = () => {
             <h1>Ski Resort Manager</h1>
             <div className="world-map-container">
                 <video ref={videoRef} loop muted playsInline className="world-map-video">
-                    <source src="/3593892521-preview.mp4" type="video/mp4" />
+                    <source src="/3658800221-preview.mp4" type="video/mp4" />
                     Your browser does not support the video tag.
                 </video>
                 <div className="map-icon" style={{ top: '40%', left: '48%' }}>
