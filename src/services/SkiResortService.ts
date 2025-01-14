@@ -39,3 +39,5 @@ class SkiResortService {
         return this.skiResorts.find(resort => resort.id === id);
     }
 }
+
+export const skiResortService = new SkiResortService();

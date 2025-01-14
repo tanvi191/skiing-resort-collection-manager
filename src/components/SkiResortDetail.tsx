@@ -29,7 +29,7 @@ const SkiResortDetail: React.FC = () => {
             <p>Beginner Slope: {resort.BeginnerSlope} km</p>
             <p>Intermediate Slope: {resort.IntermediateSlope} km</p>
             <p>Difficult Slope: {resort.DifficultSlope} km</p>
-            <p>Snowparks: {resort.Snowparks ? 'Yes' : 'No'}</p>
+            <p>SnowParks: {resort.SnowParks ? 'Yes' : 'No'}</p>
             <p>Night Ski: {resort.NightSki ? 'Yes' : 'No'}</p>
             <p>Total Lifts: {resort.TotalLifts}</p>
             <p>Lift Capacity: {resort.LiftCapacity} persons/hour</p>
@@ -37,3 +37,5 @@ const SkiResortDetail: React.FC = () => {
         </div>
     );
 };
+
+export default SkiResortDetail;
