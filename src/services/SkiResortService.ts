@@ -20,17 +20,17 @@ class SkiResortService {
 
     private parseCSV(csvData: string): SkiResort[] {
         const lines = csvData.split('\n');
-        const headers = lines[0].split(',').map(header => header.trim());
+        const headers = lines[0].split(',').map(header => header.trim()) as (keyof SkiResort)[];
         return lines.slice(1).map((line, index) => {
             const values = line.split(',').map(value => value.trim());
-            const resort: Partial<SkiResort> = { id: index };
+            const resort = { id: index } as SkiResort;
             headers.forEach((header, i) => {
                 const value = this.parseValue(values[i]);
                 if (value !== undefined) {
-                    resort[header as keyof SkiResort] = value as SkiResort[keyof SkiResort];
+                    resort[header] = value as SkiResort[keyof SkiResort];
                 }
             });
-            return resort as SkiResort;
+            return resort;
         });
     }
 
@@ -75,6 +75,8 @@ class SkiResortService {
 }
 
 export const skiResortService = new SkiResortService();
+
+
 
 
 
