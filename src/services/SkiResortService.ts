@@ -46,9 +46,23 @@ class SkiResortService {
     getSkiResortById(id: number): SkiResort | undefined {
         return this.skiResorts.find(resort => resort.id === id);
     }
+
+    addSkiResort(resort: Partial<SkiResort>): void {
+        const newResort: SkiResort = {
+            ...resort,
+            id: this.skiResorts.length
+        } as SkiResort;
+        this.skiResorts.push(newResort);
+    }
+
+    removeSkiResort(id: number): void {
+        this.skiResorts = this.skiResorts.filter(resort => resort.id !== id);
+    }
 }
 
 export const skiResortService = new SkiResortService();
+
+
 
 
 
