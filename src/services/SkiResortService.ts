@@ -50,7 +50,6 @@ class SkiResortService {
         const newResort: SkiResort = {
             ...resort,
             id: this.skiResorts.length,
-            // Set default values for properties not provided
             SnowParks: resort.SnowParks || false,
             NightSki: resort.NightSki || false,
             SurfaceLifts: resort.SurfaceLifts || 0,
@@ -65,12 +64,19 @@ class SkiResortService {
     }
 
     removeSkiResort(id: number): void {
-        this.skiResorts = this.skiResorts.filter(resort => resort.id !== id);
-        console.log(`Removed ski resort with id: ${id}`);
+        const index = this.skiResorts.findIndex(resort => resort.id === id);
+        if (index !== -1) {
+            this.skiResorts.splice(index, 1);
+            console.log(`Removed ski resort with id: ${id}`);
+        } else {
+            console.log(`Ski resort with id: ${id} not found`);
+        }
     }
 }
 
 export const skiResortService = new SkiResortService();
+
+
 
 
 

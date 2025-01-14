@@ -23,18 +23,24 @@ const RemoveResort: React.FC = () => {
     return (
         <div className="remove-resort">
             <h2>Remove Ski Resort</h2>
-            <ul>
-                {resorts.map(resort => (
-                    <li key={resort.id}>
-                        {resort.Resort} - {resort.Country}
-                        <button onClick={() => handleRemove(resort.id)}>Remove</button>
-                    </li>
-                ))}
-            </ul>
+            {resorts.length === 0 ? (
+                <p>No ski resorts available.</p>
+            ) : (
+                <ul>
+                    {resorts.map(resort => (
+                        <li key={resort.id}>
+                            {resort.Resort} - {resort.Country}
+                            <button onClick={() => handleRemove(resort.id)}>Remove</button>
+                        </li>
+                    ))}
+                </ul>
+            )}
             <button onClick={() => navigate('/resorts')}>Back to Resorts</button>
         </div>
     );
 };
 
 export default RemoveResort;
+
+
 
