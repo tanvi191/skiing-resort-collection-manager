@@ -20,26 +20,84 @@ class SkiResortService {
 
     private parseCSV(csvData: string): SkiResort[] {
         const lines = csvData.split('\n');
-        const headers = lines[0].split(',').map(header => header.trim()) as (keyof SkiResort)[];
+        const headers = lines[0].split(',').map(header => header.trim());
+        console.log('CSV Headers:', headers);
+
         return lines.slice(1).map((line, index) => {
             const values = line.split(',').map(value => value.trim());
-            const resort = { id: index } as SkiResort;
-            headers.forEach((header, i) => {
-                const value = this.parseValue(values[i]);
-                if (value !== undefined) {
-                    resort[header] = value as SkiResort[keyof SkiResort];
-                }
-            });
+            console.log(`Parsing line ${index + 1}:`, values);
+            const resort = this.createSkiResort(headers, values, index);
+            console.log(`Parsed resort ${index + 1}:`, resort);
             return resort;
         });
+    }
+
+    private createSkiResort(headers: string[], values: string[], index: number): SkiResort {
+        const resort: Partial<SkiResort> = { id: index };
+
+        headers.forEach((header, i) => {
+            const value = this.parseValue(values[i]);
+            if (value !== undefined) {
+                switch (header) {
+                    case 'Resort':
+                    case 'Country':
+                        resort[header] = value as string;
+                        break;
+                    case 'HighestPoint':
+                    case 'LowestPoint':
+                    case 'DayPassPriceAdult':
+                    case 'BeginnerSlope':
+                    case 'IntermediateSlope':
+                    case 'DifficultSlope':
+                    case 'TotalSlope':
+                    case 'SurfaceLifts':
+                    case 'ChairLifts':
+                    case 'GondolaLifts':
+                    case 'TotalLifts':
+                    case 'LiftCapacity':
+                    case 'SnowCannons':
+                        resort[header] = typeof value === 'number' ? value : 0;
+                        break;
+                    case 'Snowparks':
+                    case 'NightSki':
+                        resort[header] = value === true;
+                        break;
+                }
+            }
+        });
+
+        return this.validateSkiResort(resort);
     }
 
     private parseValue(value: string): string | number | boolean | undefined {
         if (value === '') return undefined;
         if (value === 'Yes') return true;
         if (value === 'No') return false;
-        const num = Number(value);
+        const num = Number(value.replace(',', '.'));  // Replace comma with dot for proper number parsing
         return isNaN(num) ? value : num;
+    }
+
+    private validateSkiResort(resort: Partial<SkiResort>): SkiResort {
+        return {
+            id: resort.id ?? 0,
+            Resort: resort.Resort ?? '',
+            Country: resort.Country ?? '',
+            HighestPoint: resort.HighestPoint ?? 0,
+            LowestPoint: resort.LowestPoint ?? 0,
+            DayPassPriceAdult: resort.DayPassPriceAdult ?? 0,
+            BeginnerSlope: resort.BeginnerSlope ?? 0,
+            IntermediateSlope: resort.IntermediateSlope ?? 0,
+            DifficultSlope: resort.DifficultSlope ?? 0,
+            TotalSlope: resort.TotalSlope ?? 0,
+            SnowParks: resort.SnowParks ?? false,
+            NightSki: resort.NightSki ?? false,
+            SurfaceLifts: resort.SurfaceLifts ?? 0,
+            ChairLifts: resort.ChairLifts ?? 0,
+            GondolaLifts: resort.GondolaLifts ?? 0,
+            TotalLifts: resort.TotalLifts ?? 0,
+            LiftCapacity: resort.LiftCapacity ?? 0,
+            SnowCannons: resort.SnowCannons ?? 0,
+        };
     }
 
     getSkiResortById(id: number): SkiResort | undefined {
@@ -47,18 +105,7 @@ class SkiResortService {
     }
 
     addSkiResort(resort: Partial<SkiResort>): void {
-        const newResort: SkiResort = {
-            ...resort,
-            id: this.skiResorts.length,
-            SnowParks: resort.SnowParks || false,
-            NightSki: resort.NightSki || false,
-            SurfaceLifts: resort.SurfaceLifts || 0,
-            ChairLifts: resort.ChairLifts || 0,
-            GondolaLifts: resort.GondolaLifts || 0,
-            TotalLifts: resort.TotalLifts || 0,
-            LiftCapacity: resort.LiftCapacity || 0,
-            SnowCannons: resort.SnowCannons || 0,
-        } as SkiResort;
+        const newResort = this.validateSkiResort({ ...resort, id: this.skiResorts.length });
         this.skiResorts.push(newResort);
         console.log('Added new ski resort:', newResort);
     }
@@ -75,6 +122,10 @@ class SkiResortService {
 }
 
 export const skiResortService = new SkiResortService();
+
+
+
+
 
 
 

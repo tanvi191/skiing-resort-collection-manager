@@ -17,4 +17,5 @@ export interface SkiResort {
     TotalLifts: number;
     LiftCapacity: number;
     SnowCannons: number;
+    [key: string]: string | number | boolean; // Allow for additional properties
 }
