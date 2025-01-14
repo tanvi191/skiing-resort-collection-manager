@@ -27,7 +27,7 @@ class SkiResortService {
             headers.forEach((header, i) => {
                 const value = this.parseValue(values[i]);
                 if (value !== undefined) {
-                    (resort as any)[header] = value;
+                    resort[header as keyof SkiResort] = value as SkiResort[keyof SkiResort];
                 }
             });
             return resort as SkiResort;
@@ -75,6 +75,8 @@ class SkiResortService {
 }
 
 export const skiResortService = new SkiResortService();
+
+
 
 
 
