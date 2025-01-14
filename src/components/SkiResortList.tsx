@@ -35,3 +35,4 @@ const SkiResortList: React.FC = () => {
 };
 
 export default SkiResortList;
+
