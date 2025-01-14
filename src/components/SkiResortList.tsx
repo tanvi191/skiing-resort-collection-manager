@@ -5,16 +5,22 @@ import { skiResortService } from '../services/SkiResortService';
 
 const SkiResortList: React.FC = () => {
     const [skiResorts, setSkiResorts] = useState<SkiResort[]>([]);
+    const [filteredResorts, setFilteredResorts] = useState<SkiResort[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [filters, setFilters] = useState({
+        country: '',
+        minElevation: '',
+        maxPrice: '',
+    });
 
     useEffect(() => {
         const fetchResorts = async () => {
             try {
                 setIsLoading(true);
                 const resorts = await skiResortService.fetchSkiResorts();
-                console.log('Fetched resorts:', resorts);
                 setSkiResorts(resorts);
+                setFilteredResorts(resorts);
                 setIsLoading(false);
             } catch (err) {
                 console.error('Error fetching resorts:', err);
@@ -25,6 +31,24 @@ const SkiResortList: React.FC = () => {
         fetchResorts();
     }, []);
 
+    useEffect(() => {
+        const filtered = skiResorts.filter((resort) => {
+            const countryMatch = filters.country ? resort.Country.toLowerCase().includes(filters.country.toLowerCase()) : true;
+            const elevationMatch = filters.minElevation ? resort.HighestPoint >= parseInt(filters.minElevation) : true;
+            const priceMatch = filters.maxPrice ? resort.DayPassPriceAdult <= parseInt(filters.maxPrice) : true;
+            return countryMatch && elevationMatch && priceMatch;
+        });
+        setFilteredResorts(filtered);
+    }, [filters, skiResorts]);
+
+    const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setFilters((prevFilters) => ({
+            ...prevFilters,
+            [name]: value,
+        }));
+    };
+
     if (isLoading) {
         return <div className="loading">Loading...</div>;
     }
@@ -34,19 +58,40 @@ const SkiResortList: React.FC = () => {
             <div className="error">
                 <h2>Error</h2>
                 <p>{error}</p>
-                <h3>Debug Information</h3>
-                <pre>{JSON.stringify({ error }, null, 2)}</pre>
             </div>
         );
     }
 
-    if (skiResorts.length === 0) {
-        return <div className="no-resorts">No ski resorts found.</div>;
+    if (filteredResorts.length === 0) {
+        return <div className="no-resorts">No ski resorts found matching the current filters.</div>;
     }
 
     return (
         <div className="ski-resort-list">
             <h1>All Ski Resorts</h1>
+            <div className="filters">
+                <input
+                    type="text"
+                    name="country"
+                    placeholder="Filter by country"
+                    value={filters.country}
+                    onChange={handleFilterChange}
+                />
+                <input
+                    type="number"
+                    name="minElevation"
+                    placeholder="Min elevation (m)"
+                    value={filters.minElevation}
+                    onChange={handleFilterChange}
+                />
+                <input
+                    type="number"
+                    name="maxPrice"
+                    placeholder="Max day pass price (€)"
+                    value={filters.maxPrice}
+                    onChange={handleFilterChange}
+                />
+            </div>
             <div className="table-container">
                 <table className="resort-table">
                     <thead>
@@ -62,7 +107,7 @@ const SkiResortList: React.FC = () => {
                     </tr>
                     </thead>
                     <tbody>
-                    {skiResorts.map((resort) => (
+                    {filteredResorts.map((resort) => (
                         <tr key={resort.id}>
                             <td>{resort.Resort || 'N/A'}</td>
                             <td>{resort.Country || 'N/A'}</td>
@@ -85,6 +130,8 @@ const SkiResortList: React.FC = () => {
 };
 
 export default SkiResortList;
+
+
 
 
 
