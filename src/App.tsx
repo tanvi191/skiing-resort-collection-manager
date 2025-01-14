@@ -14,11 +14,11 @@ const App: React.FC = () => {
             <div className="App">
                 <Routes>
                     <Route path="/" element={<HomePage />} />
-                    <Route path="/resorts" element={<SkiResortList />} />
-                    <Route path="/resort/:id" element={<SkiResortDetail />} />
-                    <Route path="/dashboard" element={<SkiResortDashboard />} />
-                    <Route path="/add-resort" element={<AddResort />} />
-                    <Route path="/remove-resort" element={<RemoveResort />} />
+                    <Route path="/resorts" element={<div className="content-container"><SkiResortList /></div>} />
+                    <Route path="/resort/:id" element={<div className="content-container"><SkiResortDetail /></div>} />
+                    <Route path="/dashboard" element={<div className="content-container"><SkiResortDashboard /></div>} />
+                    <Route path="/add-resort" element={<div className="content-container"><AddResort /></div>} />
+                    <Route path="/remove-resort" element={<div className="content-container"><RemoveResort /></div>} />
                 </Routes>
             </div>
         </Router>
@@ -26,6 +26,8 @@ const App: React.FC = () => {
 };
 
 export default App;
+
+
 
 
 
