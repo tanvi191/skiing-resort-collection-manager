@@ -13,3 +13,19 @@ const SkiResortList: React.FC = () => {
         };
         fetchResorts();
     }, []);
+
+    return (
+        <div className="ski-resort-list">
+            <h1>Ski Resorts</h1>
+            <div className="resort-grid">
+                {skiResorts.map((resort) => (
+                    <Link to={`/resort/${resort.id}`} key={resort.id} className="resort-card">
+                        <h2>{resort.Resort}</h2>
+                        <p>{resort.Country}</p>
+                        <p>Total Slope: {resort.TotalSlope} km</p>
+                    </Link>
+                ))}
+            </div>
+        </div>
+    );
+};
